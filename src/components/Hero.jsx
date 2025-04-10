@@ -3,12 +3,13 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import ebook from './ebook.png';
 import ato from './ato.png';
+import criador from './Cristofer.jpeg';
 
 export const Hero = () => {
   const scrollToLeadCapture = () => {
     const leadCaptureSection = document.getElementById('lead-form');
     if (leadCaptureSection) {
-      leadCaptureSection.scrollIntoView({ 
+      leadCaptureSection.scrollIntoView({
         behavior: 'smooth',
         block: 'start'
       });
@@ -18,7 +19,7 @@ export const Hero = () => {
   return (
     <div className="container mx-auto px-4 py-8 md:py-16 lg:py-20 relative">
       {/* Center Logo - Positioned on top and centered on all devices */}
-      <motion.div 
+      <motion.div
         className="flex justify-center mb-6 md:mb-10"
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -40,24 +41,48 @@ export const Hero = () => {
           transition={{ duration: 0.8, delay: 0.3 }}
         >
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6">
-            <span className="text-white block">Multiplique seu Impacto</span>
-            <span className="text-amber-500 block">Como Mentor Atômico</span>
+            <span className="text-white block">Transforme o que você sabe</span>
+            <span className="text-amber-500 block">em uma fonte de renda recorrente</span>
           </h1>
           
           <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-6 md:mb-8 max-w-xl mx-auto lg:mx-0">
-            Desbloqueie estratégias revolucionárias para transformar seu conhecimento 
-            em um negócio de mentoria de alto impacto e alta performance.
+            Um guia prático e direto ao ponto para quem quer sair do conteúdo gratuito e começar a lucrar 
+            com mentorias estruturadas — mesmo sem ser "famoso".
           </p>
           
           <motion.button
             onClick={scrollToLeadCapture}
-            className="bg-amber-500 text-slate-900 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-bold text-base sm:text-lg flex items-center gap-2 mx-auto lg:mx-0"
+            className="bg-amber-500 text-slate-900 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-bold text-base sm:text-lg flex items-center gap-2 mx-auto lg:mx-0 mb-6 md:mb-8"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <span className="mx-auto lg:mx-0">Começar Minha Transformação</span>
+            <span className="mx-auto lg:mx-0">Quero meu e-book gratuito</span>
             <ArrowRight className="ml-1 h-4 w-4 sm:h-5 sm:w-5" />
           </motion.button>
+          
+          {/* Author info below CTA button */}
+          <motion.div
+            className="flex items-start max-w-md mx-auto lg:mx-0"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.0 }}
+          >
+            <div className="flex-shrink-0 mr-4">
+              <img
+                src={criador}
+                alt="Cristofer Leone"
+                className="w-16 h-16 rounded-full object-contain bg-slate-900/80 p-1 border-2 border-amber-500"
+              />
+            </div>
+            <div className="text-left">
+              <p className="text-amber-500 text-xs font-medium uppercase tracking-wide">Autor</p>
+              <p className="text-white text-base font-bold">Cristofer Leone</p>
+              <p className="text-slate-300 text-sm">
+                Mentor com <span className="font-medium">mais de 20 anos de experiência</span> em desenvolvimento humano e liderança no Brasil.
+                Criador do <span className="font-medium">Método ATO</span> que já transformou a vida de <span className="font-medium">+500</span> profissionais.
+              </p>
+            </div>
+          </motion.div>
         </motion.div>
         
         {/* Right side - E-book image */}

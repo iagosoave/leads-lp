@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Target, Coins, Mail, User, ArrowRight, CheckCircle2, AlertCircle, Lock } from 'lucide-react';
+import { BookOpen, Target, Coins, Mail, User, ArrowRight, CheckCircle2, AlertCircle, Lock, CheckCircle } from 'lucide-react';
+import juliana from './juliana.jpeg';
 
 export const LeadCapture = () => {
   const [formData, setFormData] = useState({
@@ -54,27 +55,27 @@ export const LeadCapture = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 py-20 md:py-28" id="lead-form">
-      <div className="container mx-auto px-4">
+    <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 py-16 md:py-24" id="lead-form">
+      <div className="container mx-auto px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           {/* Section title */}
           <motion.div
-            className="text-center mb-16"
+            className="text-center mb-12 md:mb-16"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-              <span className="text-white">Receba Gratuitamente o</span>
-              <span className="block text-amber-400 mt-2">E-book do Método ATO</span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
+              <span className="text-white">Baixe o e-book gratuito:</span>
+              <span className="block text-amber-400 mt-2">"O Caminho para Transformar seu Conhecimento em uma Mentoria Lucrativa"</span>
             </h2>
-            <p className="text-slate-300 text-lg mt-4 max-w-2xl mx-auto">
-              Descubra os primeiros passos para se tornar um mentor atômico
+            <p className="text-slate-300 text-base sm:text-lg mt-4 max-w-2xl mx-auto">
+              Um roteiro estratégico para transformar seu conhecimento em um modelo de negócio rentável através de mentorias que geram resultados reais.
             </p>
           </motion.div>
           
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-16">
+          <div className="flex flex-col lg:flex-row items-start justify-between gap-8 lg:gap-16">
             {/* Left side - Features */}
             <motion.div 
               className="w-full lg:w-1/2"
@@ -83,67 +84,119 @@ export const LeadCapture = () => {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <p className="text-lg text-slate-300 mb-10">
-                Descubra os primeiros passos para se tornar um mentor atômico 
-                e revolucionar sua forma de compartilhar conhecimento.
-              </p>
+              <h3 className="text-xl text-white font-semibold mb-6">
+                O que você vai aprender neste e-book gratuito:
+              </h3>
               
-              <div className="space-y-8">
+              <div className="space-y-4 sm:space-y-5 mb-8">
                 {[
                   {
-                    icon: BookOpen,
-                    title: "Estratégias comprovadas",
-                    description: "Métodos testados pelos maiores mentores do mercado",
-                    color: "text-amber-400",
-                    bgColor: "bg-slate-800"
+                    text: "Como identificar o seu diferencial e posicionar sua experiência como um método."
                   },
                   {
-                    icon: Target,
-                    title: "Estruturação de conteúdo",
-                    description: "Organize seu conhecimento de forma impactante",
-                    color: "text-amber-400",
-                    bgColor: "bg-slate-800"
+                    text: "O mapa do método ATO para estruturar mentorias com clareza e propósito."
                   },
                   {
-                    icon: Coins,
-                    title: "Monetização inteligente",
-                    description: "Como precificar e vender sua mentoria",
-                    color: "text-amber-400",
-                    bgColor: "bg-slate-800"
+                    text: "As principais armadilhas que impedem coaches, consultores e especialistas de viver da própria mentoria."
+                  },
+                  {
+                    text: "Ferramentas práticas para sair da ideia e entrar em ação — ainda esta semana."
                   }
-                ].map((feature, index) => (
+                ].map((item, index) => (
                   <motion.div 
                     key={index} 
-                    className="flex items-center group"
+                    className="flex items-start"
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ 
                       duration: 0.6, 
-                      delay: index * 0.2 
+                      delay: index * 0.15
                     }}
                     viewport={{ once: true }}
                   >
-                    <div className={`${feature.bgColor} border-2 border-amber-400 rounded-full p-3 mr-6 shadow-lg group-hover:shadow-xl transition-all`}>
-                      <feature.icon className={`h-6 w-6 ${feature.color}`} />
+                    <div className="bg-slate-800 border border-amber-400 rounded-full p-1 mr-3 mt-0.5 flex-shrink-0">
+                      <CheckCircle className="h-4 w-4 text-amber-400" />
                     </div>
-                    <div>
-                      <h3 className={`text-lg font-medium ${feature.color}`}>{feature.title}</h3>
-                      <p className="text-slate-400">{feature.description}</p>
-                    </div>
+                    <p className="text-slate-300">{item.text}</p>
                   </motion.div>
                 ))}
               </div>
+              
+              <motion.div 
+                className="mt-8 mb-8"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                viewport={{ once: true }}
+              >
+                <div className="bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 rounded-lg overflow-hidden">
+                  <div className="flex flex-col md:flex-row">
+                    <div className="md:w-1/2 bg-slate-800 relative">
+                      <div className="w-full h-auto aspect-[4/5] md:h-full relative">
+                        <img 
+                          src={juliana}
+                          alt="Juliana Ribeiro" 
+                          className="absolute inset-0 w-full h-full object-cover object-center opacity-90"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-800/90 md:bg-gradient-to-r md:from-transparent md:to-slate-800/90"></div>
+                      </div>
+                    </div>
+                    
+                    <div className="p-5 md:p-6 md:w-1/2 relative flex flex-col justify-center">
+                      <svg className="text-amber-400/10 h-12 w-12 absolute top-3 left-3" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                      </svg>
+                      
+                      <div className="relative z-10">
+                        <p className="text-slate-200 text-lg font-light leading-relaxed italic">
+                          "Esse e-book clareou meu posicionamento. Já estou com minha primeira turma em andamento."
+                        </p>
+                        
+                        <div className="flex items-center mt-4 border-t border-slate-700/30 pt-4">
+                          <p className="text-amber-400 font-medium">Juliana Ribeiro</p>
+                          <span className="mx-2 text-slate-600">|</span>
+                          <p className="text-slate-300 text-sm">Mentora de Comunicação</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+              
+              <motion.div 
+                className="bg-slate-800/50 border border-slate-700 rounded-xl p-5 sm:p-6"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.8 }}
+                viewport={{ once: true }}
+              >
+                <h4 className="text-white text-lg font-medium mb-4">Este e-book é ideal para quem:</h4>
+                <ul className="space-y-3 text-slate-300">
+                  <li className="flex items-start">
+                    <span className="h-1.5 w-1.5 rounded-full bg-amber-400 mr-2 mt-2 flex-shrink-0"></span>
+                    <span>Sente que tem muito conhecimento, mas não consegue monetizar.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="h-1.5 w-1.5 rounded-full bg-amber-400 mr-2 mt-2 flex-shrink-0"></span>
+                    <span>Já tentou vender mentorias, mas sem método, não foi pra frente.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="h-1.5 w-1.5 rounded-full bg-amber-400 mr-2 mt-2 flex-shrink-0"></span>
+                    <span>Quer viver de propósito, com liberdade e impacto real.</span>
+                  </li>
+                </ul>
+              </motion.div>
             </motion.div>
             
             {/* Right side - Form */}
             <motion.div 
-              className="w-full lg:w-5/12 mt-12 lg:mt-0"
+              className="w-full lg:w-5/12 mt-8 lg:mt-0"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              <div className="relative bg-white/10 backdrop-blur-lg p-8 md:p-10 rounded-3xl shadow-2xl border border-white/10 overflow-hidden">
+              <div className="relative bg-white/10 backdrop-blur-lg p-6 sm:p-8 md:p-10 rounded-3xl shadow-2xl border border-white/10 overflow-hidden">
                 {/* Decorative gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-amber-400/10 opacity-20 -z-10"></div>
                 
@@ -167,15 +220,16 @@ export const LeadCapture = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                   >
-                    <h3 className="text-2xl font-bold text-white mb-2 text-center">
-                      Método ATO: Transformação Completa
+                    <h3 className="text-xl sm:text-2xl font-bold text-white mb-6 text-center">
+                      Você não precisa de mais conteúdo aleatório.<br/> 
+                      <span className="text-amber-400">Precisa de direção.</span>
                     </h3>
-                    <p className="text-center text-slate-300 mb-8 text-sm">
-                      Preencha seus dados e desbloqueie conhecimento exclusivo
+                    <p className="text-slate-300 text-center mb-6 text-sm sm:text-base">
+                      Baixe agora o e-book e dê o primeiro passo para transformar seu conhecimento em uma mentoria lucrativa.
                     </p>
                   </motion.div>
                   
-                  <form onSubmit={handleSubmit} className="space-y-6">
+                  <form onSubmit={handleSubmit} className="space-y-5">
                     <div className="relative group">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <User className="text-slate-400 group-focus-within:text-amber-500 h-5 w-5 transition-all duration-300" />
@@ -192,7 +246,7 @@ export const LeadCapture = () => {
                           boxShadow: '0 0 0 4px rgba(245, 158, 11, 0.2)',
                           transition: { duration: 0.3 }
                         }}
-                        className="w-full pl-12 pr-4 py-4 rounded-xl bg-white/20 backdrop-blur-lg border-2 border-white/30 focus:border-amber-400 focus:outline-none text-white placeholder-slate-300 transition-all duration-300"
+                        className="w-full pl-12 pr-4 py-3 sm:py-4 rounded-xl bg-white/20 backdrop-blur-lg border-2 border-white/30 focus:border-amber-400 focus:outline-none text-white placeholder-slate-300 transition-all duration-300"
                       />
                     </div>
                     
@@ -212,14 +266,14 @@ export const LeadCapture = () => {
                           boxShadow: '0 0 0 4px rgba(245, 158, 11, 0.2)',
                           transition: { duration: 0.3 }
                         }}
-                        className="w-full pl-12 pr-4 py-4 rounded-xl bg-white/20 backdrop-blur-lg border-2 border-white/30 focus:border-amber-400 focus:outline-none text-white placeholder-slate-300 transition-all duration-300"
+                        className="w-full pl-12 pr-4 py-3 sm:py-4 rounded-xl bg-white/20 backdrop-blur-lg border-2 border-white/30 focus:border-amber-400 focus:outline-none text-white placeholder-slate-300 transition-all duration-300"
                       />
                     </div>
                     
                     <motion.button
                       type="submit"
                       disabled={formStatus.isSubmitting}
-                      className="relative w-full bg-gradient-to-r from-amber-500 to-amber-400 text-slate-900 py-4 rounded-xl font-bold text-lg flex items-center justify-center shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                      className="relative w-full bg-gradient-to-r from-amber-500 to-amber-400 text-slate-900 py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg flex items-center justify-center shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.97 }}
                     >
@@ -233,7 +287,7 @@ export const LeadCapture = () => {
                         </div>
                       ) : (
                         <>
-                          Receber E-book Agora
+                          Quero meu e-book gratuito
                           <ArrowRight className="ml-2 h-5 w-5" />
                         </>
                       )}
@@ -266,20 +320,19 @@ export const LeadCapture = () => {
                     )}
                   </AnimatePresence>
                   
-                  <div className="mt-8 text-center">
+                  <div className="mt-6">
                     <motion.div 
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
                       transition={{ duration: 0.5, delay: 0.3 }}
-                      className="inline-flex items-center justify-center bg-green-100/30 text-green-300 px-4 py-2 rounded-full text-sm font-medium mb-4"
                     >
-                      <span className="block h-2 w-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>
-                      <span>+520 pessoas já baixaram</span>
+                      <div className="text-center">
+                        <p className="text-xs text-slate-400 flex items-center justify-center">
+                          <Lock className="h-4 w-4 mr-2 text-slate-500" />
+                          Seus dados estão protegidos. Nada de spam, só conteúdo de valor.
+                        </p>
+                      </div>
                     </motion.div>
-                    <p className="text-xs text-slate-400 mt-2 flex items-center justify-center">
-                      <Lock className="h-4 w-4 mr-2 text-slate-500" />
-                      Seus dados estão 100% seguros conosco
-                    </p>
                   </div>
                 </div>
               </div>

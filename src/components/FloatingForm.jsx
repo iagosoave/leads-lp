@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, User, Download, ChevronRight, Phone } from 'lucide-react';
+import emailjs from '@emailjs/browser'; // Importar o EmailJS
 import ebookPDF from './ato.pdf'; // Importar o PDF diretamente
 
 // Componente para o ícone do WhatsApp
@@ -10,7 +11,81 @@ const WhatsAppIcon = ({ className }) => (
   </svg>
 );
 
+// Função de formatação para telefone brasileiro com +55 (DDD) XXXXX-XXXX
+const formatBrazilianPhone = (value) => {
+  // Remove todos os caracteres não numéricos
+  const numbers = value.replace(/\D/g, '');
+  
+  // Se não tiver números, retorna vazio
+  if (!numbers) return '';
+  
+  // Vamos sempre tratar o número como se já tivesse o prefixo 55
+  // Se começa com 55, usamos como está, senão adicionamos o 55
+  const fullNumber = numbers.startsWith('55') ? numbers : '55' + numbers;
+  
+  // Extrair as partes do número
+  const country = '+55';
+  const ddd = fullNumber.substring(2, 4);
+  const rest = fullNumber.substring(4);
+  
+  // Montamos o número formatado progressivamente
+  
+  // Se não tiver DDD ainda, retorna apenas o que foi digitado
+  if (ddd.length === 0) {
+    // Se temos apenas o 55 implícito, não mostramos nada
+    return '';
+  }
+  
+  // Se tiver DDD parcial, mostra apenas os dígitos sem formatação
+  if (ddd.length === 1) {
+    return ddd;
+  }
+  
+  // Se tiver DDD completo, formata com parênteses
+  let formatted = country + ' (' + ddd + ')';
+  
+  // Se tiver parte do número além do DDD
+  if (rest.length > 0) {
+    formatted += ' ' + rest;
+    
+    // Se tiver pelo menos 5 dígitos do número, adiciona o hífen
+    if (rest.length >= 5) {
+      formatted = formatted.substring(0, country.length + 4 + 1); // +55 (DD) 
+      formatted += rest.substring(0, 5) + '-' + rest.substring(5);
+    }
+  }
+  
+  return formatted;
+};
+
+// Função para extrair apenas os números
+const unformatPhone = (formattedValue) => {
+  // Remove todos os caracteres não numéricos
+  let numericValue = formattedValue.replace(/\D/g, '');
+  
+  // Se já começar com 55, mantém como está, senão adiciona
+  if (numericValue.startsWith('55')) {
+    return numericValue;
+  } else {
+    return '55' + numericValue;
+  }
+};
+
+// Função para criar um link do WhatsApp a partir do número de telefone
+const formatWhatsAppLink = (phoneNumber) => {
+  // Remover todos os caracteres não numéricos
+  const numbersOnly = phoneNumber.replace(/\D/g, '');
+  
+  // Certificar-se de que o número começa com 55 (código do Brasil)
+  const whatsappNumber = numbersOnly.startsWith('55') ? numbersOnly : `55${numbersOnly}`;
+  
+  // Gerar o link do WhatsApp
+  return `https://api.whatsapp.com/send/?phone=${whatsappNumber}`;
+};
+
 export const FloatingForm = () => {
+  // Referência para EmailJS
+  const formRef = useRef();
   // Definir isVisible direto como true para testar
   const [isVisible, setIsVisible] = useState(true);
   const [formStatus, setFormStatus] = useState({
@@ -23,9 +98,21 @@ export const FloatingForm = () => {
     email: '',
     phone: ''
   });
+  const [displayPhone, setDisplayPhone] = useState(''); // Para exibição formatada
 
   // Link do grupo de WhatsApp
   const WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/DTm2RaRYGrUEGNZz7JiLlb";
+  // Link do calendário
+  const CALENDAR_LINK = "https://calendar.app.google/zNT351dZ1eH8kAAaA";
+
+  // Configurações do EmailJS - Formulário Original
+  const EMAILJS_SERVICE_ID = 'service_90vuf6r';
+  const EMAILJS_TEMPLATE_ID = 'template_itq8opk';
+  const EMAILJS_PUBLIC_KEY = '0GCowirbv2hrggGDt';
+
+  // Configurações do EmailJS - Novo Email de Boas-vindas
+  const WELCOME_EMAIL_SERVICE_ID = 'service_rfhmc3p';
+  const WELCOME_EMAIL_TEMPLATE_ID = 'template_89t9kr9';
 
   // Não estamos usando useEffect para decidir mostrar o popup
   // Ele já está visível por padrão
@@ -36,10 +123,95 @@ export const FloatingForm = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    if (name === 'phone') {
+      // Formata o número para exibição
+      const formattedDisplay = formatBrazilianPhone(value);
+      setDisplayPhone(formattedDisplay);
+      
+      // Salva o valor sem formatação no estado, mas com prefixo 55
+      if (formattedDisplay) {
+        const rawValue = unformatPhone(value);
+        setFormData(prev => ({
+          ...prev,
+          [name]: rawValue
+        }));
+      } else {
+        // Se o valor formatado for vazio, limpa também o formData
+        setFormData(prev => ({
+          ...prev,
+          [name]: ''
+        }));
+      }
+    } else {
+      // Para outros campos, comportamento normal
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+
+  // Função para lidar com eventos de teclado específicos no campo de telefone
+  const handlePhoneKeyDown = (e) => {
+    // Implementação especial para Backspace
+    if (e.key === 'Backspace') {
+      e.preventDefault();
+      
+      // Extraímos apenas os números da string atual
+      const numbersOnly = displayPhone.replace(/\D/g, '');
+      
+      // Remove o último dígito
+      const newNumbers = numbersOnly.slice(0, -1);
+      
+      // Formata e atualiza o estado de exibição
+      const formatted = formatBrazilianPhone(newNumbers);
+      setDisplayPhone(formatted);
+      
+      // Atualiza o formData
+      if (newNumbers.length > 0) {
+        // Se ainda houver números, certifique-se de adicionar o 55 na frente
+        const rawValue = newNumbers.startsWith('55') ? newNumbers : '55' + newNumbers;
+        setFormData(prev => ({
+          ...prev,
+          phone: rawValue
+        }));
+      } else {
+        // Se não houver mais números, limpa o campo
+        setFormData(prev => ({
+          ...prev,
+          phone: ''
+        }));
+      }
+    }
+  };
+
+  // Função para enviar o email personalizado de boas-vindas
+  const sendWelcomeEmail = async (userData) => {
+    try {
+      // Preparar os parâmetros para o email de boas-vindas
+      const welcomeParams = {
+        name: userData.name,
+        email: userData.email,
+        calendar_link: CALENDAR_LINK,
+        whatsapp_link: WHATSAPP_GROUP_LINK
+      };
+      
+      // Enviar o email de boas-vindas
+      const welcomeResult = await emailjs.send(
+        WELCOME_EMAIL_SERVICE_ID,
+        WELCOME_EMAIL_TEMPLATE_ID,
+        welcomeParams,
+        EMAILJS_PUBLIC_KEY
+      );
+      
+      console.log('Email de boas-vindas enviado com sucesso:', welcomeResult.text);
+      return true;
+    } catch (error) {
+      console.error('Erro ao enviar o email de boas-vindas:', error);
+      // Não falharemos o fluxo principal se o email de boas-vindas falhar
+      return false;
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -52,18 +224,41 @@ export const FloatingForm = () => {
     });
 
     try {
-      // Simular um processamento
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Preparar os dados para o EmailJS com link do WhatsApp
+      const templateParams = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone, // Número sem formatação com prefixo 55
+        phone_display: displayPhone, // Número formatado para exibição
+        phone_link: formatWhatsAppLink(formData.phone), // Link do WhatsApp
+        date: new Date().toLocaleString('pt-BR')
+      };
       
-      console.log('Form submitted:', formData);
+      // 1. Enviar o email principal usando EmailJS
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      );
       
-      // Iniciar o download do arquivo
+      console.log('Email principal enviado com sucesso');
+      
+      // 2. Enviar o email de boas-vindas personalizado
+      await sendWelcomeEmail({
+        name: formData.name,
+        email: formData.email
+      });
+      
+      // 3. Iniciar o download do arquivo
       const downloadLink = document.createElement('a');
       downloadLink.href = ebookPDF;
       downloadLink.download = 'mentoria-metodoato-ebook.pdf';
       document.body.appendChild(downloadLink);
       downloadLink.click();
       document.body.removeChild(downloadLink);
+      
+      console.log('Download iniciado com sucesso');
       
       // Salvar o lead
       const newLead = {
@@ -90,6 +285,7 @@ export const FloatingForm = () => {
         email: '',
         phone: ''
       });
+      setDisplayPhone(''); // Limpa também o telefone formatado
       
     } catch (error) {
       console.error('Erro ao processar o formulário:', error);
@@ -139,7 +335,7 @@ export const FloatingForm = () => {
                     Preencha os campos abaixo para receber imediatamente nosso e-book exclusivo!
                   </p>
 
-                  <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+                  <form ref={formRef} onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4 sm:h-5 sm:w-5" />
                       <input
@@ -166,14 +362,15 @@ export const FloatingForm = () => {
                       />
                     </div>
 
-                    {/* Campo de telefone */}
+                    {/* Campo de telefone ATUALIZADO com formatação */}
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4 sm:h-5 sm:w-5" />
                       <input
                         type="tel"
                         name="phone"
-                        value={formData.phone}
+                        value={displayPhone}
                         onChange={handleInputChange}
+                        onKeyDown={handlePhoneKeyDown}
                         placeholder="Seu telefone com DDD"
                         required
                         className="w-full pl-9 sm:pl-10 pr-4 py-2 rounded-lg border border-slate-600 bg-slate-700 text-white text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-amber-500"
